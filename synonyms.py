@@ -34,11 +34,15 @@ def cosine_similarity(vec1, vec2):
 
 
 def build_semantic_descriptors(sentences):
+    #I tried to make it work in one go but if it ends up not working or having issues,
+    # we can change it so it goes through the list(of lists) twice (which is still O(n))
     word_dictionary = {}
 
     for sentence in sentences:
         cur_sentence_words = []
         for w in sentence:
+            if w in cur_sentence_words:
+                continue
             for x in cur_sentence_words:
                 if x == w:
                     continue
@@ -48,6 +52,7 @@ def build_semantic_descriptors(sentences):
                     word_dictionary[w][x] = 1
                 else:
                     word_dictionary[w][x] += 1
+            
             cur_sentence_words.append(w)
             for x in cur_sentence_words:
                 if x == w:
@@ -75,9 +80,10 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
 
 if __name__ == "__main__":
 #    print(build_semantic_descriptors([["i", "am", "a", "sick", "man"], ["i", "am", "a", "sick", "man"]]))
-    print(build_semantic_descriptors([["i", "am", "a", "sick", "man"],
-["i", "am", "a", "spiteful", "man"],
-["i", "am", "an", "unattractive", "man"],
-["i", "believe", "my", "liver", "is", "diseased"],
-["however", "i", "know", "nothing", "at", "all", "about", "my",
-"disease", "and", "do", "not", "know", "for", "certain", "what", "ails", "me"]]))
+#     print(build_semantic_descriptors([["i", "am", "a", "sick", "man"],
+# ["i", "am", "a", "spiteful", "man"],
+# ["i", "am", "an", "unattractive", "man"],
+# ["i", "believe", "my", "liver", "is", "diseased"],
+# ["however", "i", "know", "nothing", "at", "all", "about", "my",
+# "disease", "and", "do", "not", "know", "for", "certain", "what", "ails", "me"]]))
+    print(build_semantic_descriptors([["i", "fish", "fish", "bob"]]))
