@@ -67,16 +67,39 @@ def build_semantic_descriptors(sentences):
     return word_dictionary
 
 def build_semantic_descriptors_from_files(filenames):
-    pass
-
+    '''Input: Filenames (for data)
+    Output: Semantic descriptors (dictionaries)'''
+    sentences = []
+    for i in range(len(filenames)):
+        file = open(filenames[i], "r", encoding="latin1") 
+        data = file.read()
+        sentences.extend(data.split(", - -- : ;"))
+    
+    return build_semantic_descriptors(sentences)
 
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
-    pass
+    top_score = 0
+    res = ''
+    for e in choices:
+        if cosine_similarity(semantic_descriptors(e), semantic_descriptors(word)) > top_score:
+            top_score = cosine_similarity(semantic_descriptors(e), semantic_descriptors(word))
+            res = e
 
+    return res
 
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
-    pass
+    test = open(filename, "r", encoding="latin1")
+    counter = 0
+    correct = 0
+    for line in test.readlines():
+        counter += 1
+        question = line.split()
+        prediction = most_similar_word(question[0], question[2:len(question)-1], semantic_descriptors, similarity_fn)
+        if prediction == question[1]:
+            correct += 1
+    
+    return (correct/counter) * 100
 
 if __name__ == "__main__":
 #    print(build_semantic_descriptors([["i", "am", "a", "sick", "man"], ["i", "am", "a", "sick", "man"]]))
@@ -87,3 +110,6 @@ if __name__ == "__main__":
 # ["however", "i", "know", "nothing", "at", "all", "about", "my",
 # "disease", "and", "do", "not", "know", "for", "certain", "what", "ails", "me"]]))
     print(build_semantic_descriptors([["i", "fish", "fish", "bob"]]))
+    sem_descriptors = build_semantic_descriptors_from_files(["wp.txt", "sw.txt"])
+    res = run_similarity_test("test.txt", sem_descriptors, cosine_similarity)
+    print(res, "of the guesses were correct")
