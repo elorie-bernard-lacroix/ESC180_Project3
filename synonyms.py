@@ -73,15 +73,15 @@ def build_semantic_descriptors_from_files(filenames):
     for i in range(len(filenames)):
         file = open(filenames[i], "r", encoding="latin1")
         data = file.read()
-        data.replace("!", ".")
-        data.replace("?", ".")
+        data = data.replace("!", ".")
+        data = data.replace("?", ".")
         sentences.extend(data.split("."))
 
     for i in range(len(sentences)):
         sentences[i] = sentences[i].split()
         for wi in range(len(sentences[i])):
-            sentences[i][wi] = sentences[i][wi].strip(", - -- : ;")
-                
+            sentences[i][wi] = sentences[i][wi].strip(', - -- : ;').lower()
+
     return build_semantic_descriptors(sentences)
 
 
@@ -89,6 +89,8 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     top_score = 0
     res = ''
     for e in choices:
+        if e not in sem_descriptors or word not in semantic_descriptors:
+            return -1
         if similarity_fn(semantic_descriptors[e], semantic_descriptors[word]) > top_score:
             top_score = similarity_fn(semantic_descriptors[e], semantic_descriptors[word])
             res = e
@@ -102,8 +104,8 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
     for line in test.readlines():
         counter += 1
         question = line.split()
-        prediction = most_similar_word(question[0], question[2:len(question)], semantic_descriptors, similarity_fn)
-        if prediction == question[1]:
+        prediction = most_similar_word(question[0], question[2:len(question)], semantic_descriptors, similarity_fn) 
+        if prediction == question[1]: #if unable to guess, guesses -1 which is always wrong
             correct += 1
 
     return (correct/counter) * 100
