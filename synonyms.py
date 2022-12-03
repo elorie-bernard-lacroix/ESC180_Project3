@@ -82,7 +82,7 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     top_score = 0
     res = ''
     for e in choices:
-        if cosine_similarity(semantic_descriptors(e), semantic_descriptors(word)) > top_score:
+        if cosine_similarity(semantic_descriptors[e], semantic_descriptors[word]) > top_score:
             top_score = cosine_similarity(semantic_descriptors(e), semantic_descriptors(word))
             res = e
 
@@ -95,7 +95,7 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
     for line in test.readlines():
         counter += 1
         question = line.split()
-        prediction = most_similar_word(question[0], question[2:len(question)-1], semantic_descriptors, similarity_fn)
+        prediction = most_similar_word(question[0], question[2:len(question)], semantic_descriptors, similarity_fn)
         if prediction == question[1]:
             correct += 1
     
