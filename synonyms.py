@@ -1,6 +1,6 @@
-'''Semantic Similarity: starter code
+'''Semantic Similarity
 
-Author: Michael Guerzhoy. Last modified: Nov. 18, 2022.
+Last Modified by Elorie Bernard-Lacroix and Chaewon Lim on December 2, 2022
 '''
 
 import math
@@ -87,11 +87,11 @@ def build_semantic_descriptors_from_files(filenames):
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     top_score = 0
-    res = ''
+    res = choices[0]  # if both aren't in the sem_descriptors, it will return the first choice by default
     for e in choices:
         if e not in semantic_descriptors or word not in semantic_descriptors:
-            return -1
-        if similarity_fn(semantic_descriptors[e], semantic_descriptors[word]) > top_score:
+            continue
+        elif similarity_fn(semantic_descriptors[e], semantic_descriptors[word]) > top_score:
             top_score = similarity_fn(semantic_descriptors[e], semantic_descriptors[word])
             res = e
 
