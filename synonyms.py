@@ -89,7 +89,7 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     top_score = 0
     res = ''
     for e in choices:
-        if e not in sem_descriptors or word not in semantic_descriptors:
+        if e not in semantic_descriptors or word not in semantic_descriptors:
             return -1
         if similarity_fn(semantic_descriptors[e], semantic_descriptors[word]) > top_score:
             top_score = similarity_fn(semantic_descriptors[e], semantic_descriptors[word])
