@@ -7,19 +7,19 @@ import math
 
 
 def norm(vec):
-    '''Return the norm of a vector stored as a dictionary, as 
+    '''Return the norm of a vector stored as a dictionary, as
     described in the handout for Project 3.
     '''
-    
-    sum_of_squares = 0.0  
+
+    sum_of_squares = 0.0
     for x in vec:
         sum_of_squares += vec[x] * vec[x]
-    
+
     return math.sqrt(sum_of_squares)
 
 
 def cosine_similarity(vec1, vec2):
-    '''Return the consine similarity between the sparse vectors 
+    '''Return the consine similarity between the sparse vectors
     vec1 and vec2, stored as dictionaries.'''
     dot_prod = 0
     vec1_sum = 0
@@ -52,7 +52,7 @@ def build_semantic_descriptors(sentences):
                     word_dictionary[w][x] = 1
                 else:
                     word_dictionary[w][x] += 1
-            
+
             cur_sentence_words.append(w)
             for x in cur_sentence_words:
                 if x == w:
@@ -71,10 +71,17 @@ def build_semantic_descriptors_from_files(filenames):
     Output: Semantic descriptors (dictionaries)'''
     sentences = []
     for i in range(len(filenames)):
-        file = open(filenames[i], "r", encoding="latin1") 
+        file = open(filenames[i], "r", encoding="latin1")
         data = file.read()
-        sentences.extend(data.split(", - -- : ;"))
-    
+        data.replace("!", ".")
+        data.replace("?", ".")
+        sentences.extend(data.split("."))
+
+    for i in range(len(sentences)):
+        sentences[i] = sentences[i].split()
+        for wi in range(len(sentences[i])):
+            sentences[i][wi] = sentences[i][wi].strip(", - -- : ;")
+                
     return build_semantic_descriptors(sentences)
 
 
@@ -82,8 +89,8 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     top_score = 0
     res = ''
     for e in choices:
-        if cosine_similarity(semantic_descriptors[e], semantic_descriptors[word]) > top_score:
-            top_score = cosine_similarity(semantic_descriptors(e), semantic_descriptors(word))
+        if similarity_fn(semantic_descriptors[e], semantic_descriptors[word]) > top_score:
+            top_score = similarity_fn(semantic_descriptors[e], semantic_descriptors[word])
             res = e
 
     return res
@@ -98,7 +105,7 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
         prediction = most_similar_word(question[0], question[2:len(question)], semantic_descriptors, similarity_fn)
         if prediction == question[1]:
             correct += 1
-    
+
     return (correct/counter) * 100
 
 if __name__ == "__main__":
